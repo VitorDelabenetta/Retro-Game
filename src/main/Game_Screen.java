@@ -1,6 +1,10 @@
 package main;
 
 import javax.swing.JPanel;
+
+import entities.Player;
+import tile.Tile_Manager;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,17 +16,12 @@ public class Game_Screen extends JPanel implements Runnable {
 	
 		final int tile_size = 16; // 16x16 tiles
 		final int scale = 3; // Como 16x16 resolution é muito baixa, fazemos 3x
-		final int tiles = tile_size * scale;
-		
-		final int screen_columns = 16;
-		final int screen_rows = 12;
-		final int screen_width = tiles * screen_columns; // 768 
-		final int screen_height = tiles * screen_columns; // 576
-		
-		// POSIÇÃO DO JOGADOR
-		int playerX = 100;
-		int playerY = 100;
-		int player_speed = 4; // Movimento em pixels
+		public final int tiles = tile_size * scale;
+		public final int screen_columns = 16;
+		public final int screen_rows = 12;
+		public final int screen_width = tiles * screen_columns; // 768 
+		public final int screen_height = tiles * screen_columns; // 576
+		// Deixamos público para acessar de outros package (como das Entidades)
 		
 		// FPS
 		int fps = 60;
@@ -31,6 +30,8 @@ public class Game_Screen extends JPanel implements Runnable {
 	// Thread: permite a adição de temporalidade ao programa, para fazermos as taxas de atualização por segundo (FPS)
 	Keys_Inputs keyboard_input = new Keys_Inputs();
 	// Importamos as informações do teclado da nossa outra Classe
+	Player player = new Player(this, keyboard_input);
+	Tile_Manager tiles_manager = new Tile_Manager(this);
 	
 		
 	public Game_Screen() {
@@ -94,18 +95,7 @@ public class Game_Screen extends JPanel implements Runnable {
 	
 	public void update() {
 		
-		if (keyboard_input.down_pressed) {
-			playerY += player_speed;
-		}
-		else if (keyboard_input.up_pressed) {
-			playerY -= player_speed;
-		}
-		else if (keyboard_input.right_pressed) {
-			playerX += player_speed;
-		}
-		else if (keyboard_input.left_pressed) {
-			playerX -= player_speed;
-		}
+		player.update();
 		
 	}
 	
@@ -118,8 +108,10 @@ public class Game_Screen extends JPanel implements Runnable {
 		Graphics2D graphics_2d = (Graphics2D)graphics;
 		// Como nosso jogo será 2D, usamos uma classe mais específica do Java para trabalhar com controle de geometria, coordenadas, etc
 		
-		graphics_2d.setColor(Color.green);
-		graphics_2d.fillRect(playerX, playerY, tiles, tiles);
+		tiles_manager.draw(graphics_2d);
+		player.draw(graphics_2d);
+		// Nossos layers devem seguir a ordem de tiles antes do player, como z-index
+		
 		graphics_2d.dispose(); // Finaliza o processo, mesmo que o Garbage Collector já o faça (garante seguridade)
 		
 	}	

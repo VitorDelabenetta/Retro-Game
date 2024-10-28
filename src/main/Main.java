@@ -8,8 +8,8 @@ public class Main {
 		
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(true);
-		window.setTitle("JOGO DE TESTE"); //Título da janela de jogo
+		window.setResizable(false);
+		window.setTitle("RETRO GAME"); //Título da janela de jogo
 		
 		Game_Screen screen = new Game_Screen();
 		window.add(screen);
